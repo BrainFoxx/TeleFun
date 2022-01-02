@@ -8,10 +8,8 @@ from bs4 import BeautifulSoup
 import urllib.parse
 import json
 
-bot = telebot.TeleBot("TOKEN")
-
+bot = telebot.TeleBot("")
 chars = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-pron = ["lewdk", "classic"]
 print(bot.get_me())
 BASE = "https://mini.s-shot.ru/1920x1080/JPEG/1920/Z100/?"
 count = 0
@@ -28,6 +26,7 @@ def command(message):
     box_site_screen = types.KeyboardButton("Site screen")
     box_ip_info = types.KeyboardButton("IP info")
     box_hentai = types.KeyboardButton("Hentai")
+    box_dislike = types.KeyboardButton("YouTube Dislikes")
     markup.add(
         box_myid,
         box_logpass,
@@ -37,13 +36,16 @@ def command(message):
         box_site_screen,
         box_ip_info,
         box_hentai,
+        box_dislike
     )
-    bot.send_message(message.chat.id, "Выберите действие:", reply_markup=markup)
+    rand_photo = ['YfcBgOZ.png', 'P7fnhkG.png']
+    photo = random.choice(rand_photo)
+    photos = open(photo, 'rb')
+    bot.send_photo(message.chat.id, photos, caption="Выберите действие:", reply_markup=markup)
 
 
 @bot.message_handler(content_types=["text"], func=lambda m: True)
 def function(message):
-    global login, password
     if message.text == "Генератор log:pass":
         for _ in range(12):
             login = ""
@@ -68,20 +70,20 @@ def function(message):
     elif message.text == "Python":
         last_python(message)
     elif message.text == "Site screen":
-        bot.send_message(message.chat.id, "Введите ссылку:")
+        bot.send_message(message.chat.id, 'Введите ссылку')
         bot.register_next_step_handler(message, main)
     elif message.text == "IP info":
         bot.send_message(message.chat.id, "Введите ip:")
         bot.register_next_step_handler(message, ip_info)
     elif message.text == "Hentai":
-        if random.choice(pron) == "classic":
-            response = requests.get("https://nekos.life/api/v2/img/classic")
-            json_data = json.loads(response.text)
-            bot.send_document(message.chat.id, json_data["url"])
-        elif random.choice(pron) == "lewdk":
-            response = requests.get("https://nekos.life/api/v2/img/lewdk")
-            json_data = json.loads(response.text)
-            bot.send_photo(message.chat.id, json_data["url"])
+        response = requests.get(f"https://nekos.life/api/v2/img/lewdk")
+        json_data = json.loads(response.text)
+        bot.send_photo(message.chat.id, json_data["url"])
+    elif message.text == "YouTube Dislikes":
+        bot.send_message(message.chat.id, 'Введите id видео:')
+        photos = open('youtubeid.png', 'rb')
+        bot.send_photo(message.chat.id, photos)
+        bot.register_next_step_handler(message, dislikes)
 
     time_message = time.ctime(message.date)
     print(
@@ -94,17 +96,25 @@ def function(message):
         ") -",
         "(Имя -",
         message.from_user.first_name,
-        ")}\n",
+        ")}",
+        "\nUser ID:{", message.from_user.id, "}\n"
         "##########",
     )
 
+def dislikes(message):
+    try:
+        link = requests.get(f'https://returnyoutubedislikeapi.com/votes?videoId={message.text.replace("https://www.youtube.com/watch?v=", "")}')
+        dislike = link.json()["dislikes"]
+        bot.reply_to(message, dislike)
+    except: 
+        bot.reply_to(message, 'Нет такого id!')
 
 def code(message):
     code = str(message.text)
     try:
         bot.reply_to(message, f'{base64.b64encode(bytes(code, "utf-8")).decode()}')
     except:
-        bot.reply_to(message, "Вы ввели ересть!")
+        bot.reply_to(message, "Вы ввели хуйню!")
 
 
 def decode(message):
@@ -112,7 +122,7 @@ def decode(message):
     try:
         bot.reply_to(message, f'{base64.b64decode(bytes(code, "utf-8")).decode()}')
     except:
-        bot.reply_to(message, "Вы ввели ересть!")
+        bot.reply_to(message, "Вы ввели хуйню!")
 
 
 def last_python(message):
@@ -139,13 +149,12 @@ def ip_info(message):
 
         bot.send_message(
             message.chat.id,
-            f"\n<IP: {user_ip}\nГород: {user_city}\nРегион: {user_region}\nСтрана: {user_country}\nМестонахождение: {user_location}\nПровайдер: {user_org} >",
+            f"\n< Инфа о IP\nIP: {user_ip}\nГород: {user_city}\nРегион: {user_region}\nСтрана: {user_country}\nМестонахождение: {user_location}\nПровайдер: {user_org} >",
         )
     except:
         bot.send_message(
-            message.chat.id, "[ERROR]"
+            message.chat.id, "[ОШИБКА], обратитесь к администратору - @Brainfox33421"
         )
-
 
 def main(message):
     try:
@@ -161,8 +170,7 @@ def main(message):
         bot.send_photo(message.chat.id, img)
     except:
         bot.send_photo(
-            message.chat.id, "[ERROR]"
+            message.chat.id, "[ОШИБКА], обратитесь к администратору - @Brainfox33421"
         )
-
 
 bot.polling(none_stop=True)
