@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import urllib.parse
 import json
 
-bot = telebot.TeleBot("")
+bot = telebot.TeleBot("TOKEN")
 chars = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 print(bot.get_me())
 BASE = "https://mini.s-shot.ru/1920x1080/JPEG/1920/Z100/?"
@@ -83,22 +83,6 @@ def function(message):
         photos = open('youtubeid.png', 'rb')
         bot.send_photo(message.chat.id, photos)
         bot.register_next_step_handler(message, dislikes)
-
-    time_message = time.ctime(message.date)
-    print(
-        "Date logs:{",
-        time_message,
-        "}\nHave:{",
-        message.text,
-        "}\nAuthor:{(Никнейм -",
-        message.from_user.username,
-        ") -",
-        "(Name -",
-        message.from_user.first_name,
-        ")}",
-        "\nUser ID:{", message.from_user.id, "}\n"
-        "##########",
-    )
 
 def dislikes(message):
     try:
