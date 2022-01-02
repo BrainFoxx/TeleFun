@@ -12,7 +12,6 @@ bot = telebot.TeleBot("")
 chars = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 print(bot.get_me())
 BASE = "https://mini.s-shot.ru/1920x1080/JPEG/1920/Z100/?"
-count = 0
 
 
 @bot.message_handler(commands=["start", "info"])
