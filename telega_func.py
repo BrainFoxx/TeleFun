@@ -59,41 +59,41 @@ def function(message):
             message, f"Сгенерирован логин - {login}\nСгенерирован пароль - {password}"
         )
     elif message.text == "Base 64 code":
-        bot.reply_to(message, "Введите сообщение которое нужно зашифровать:")
+        bot.reply_to(message, "Enter the message you want to encrypt:")
         bot.register_next_step_handler(message, code)
     elif message.text == "Base 64 decode":
-        bot.reply_to(message, "Введите сообщение которое нужно разшифровать:")
+        bot.reply_to(message, "Enter the message you want to decrypt:")
         bot.register_next_step_handler(message, decode)
     elif message.text == "Myid":
-        bot.reply_to(message, f"Ваш  ID - {message.from_user.id}")
+        bot.reply_to(message, f"Your  ID - {message.from_user.id}")
     elif message.text == "Python":
         last_python(message)
     elif message.text == "Site screen":
-        bot.send_message(message.chat.id, 'Введите ссылку')
+        bot.send_message(message.chat.id, 'Type site')
         bot.register_next_step_handler(message, main)
     elif message.text == "IP info":
-        bot.send_message(message.chat.id, "Введите ip:")
+        bot.send_message(message.chat.id, "Enter id:")
         bot.register_next_step_handler(message, ip_info)
     elif message.text == "Hentai":
         response = requests.get(f"https://nekos.life/api/v2/img/lewdk")
         json_data = json.loads(response.text)
         bot.send_photo(message.chat.id, json_data["url"])
     elif message.text == "YouTube Dislikes":
-        bot.send_message(message.chat.id, 'Введите id видео:')
+        bot.send_message(message.chat.id, 'Enter video id:')
         photos = open('youtubeid.png', 'rb')
         bot.send_photo(message.chat.id, photos)
         bot.register_next_step_handler(message, dislikes)
 
     time_message = time.ctime(message.date)
     print(
-        "Дата лога:{",
+        "Date logs:{",
         time_message,
-        "}\nСодержимое:{",
+        "}\nHave:{",
         message.text,
-        "}\nАвтор:{(Никнейм -",
+        "}\nAuthor:{(Никнейм -",
         message.from_user.username,
         ") -",
-        "(Имя -",
+        "(Name -",
         message.from_user.first_name,
         ")}",
         "\nUser ID:{", message.from_user.id, "}\n"
@@ -106,14 +106,14 @@ def dislikes(message):
         dislike = link.json()["dislikes"]
         bot.reply_to(message, dislike)
     except: 
-        bot.reply_to(message, 'Нет такого id!')
+        bot.reply_to(message, 'Invalid id')
 
 def code(message):
     code = str(message.text)
     try:
         bot.reply_to(message, f'{base64.b64encode(bytes(code, "utf-8")).decode()}')
     except:
-        bot.reply_to(message, "Вы ввели хуйню!")
+        bot.reply_to(message, "ERROR")
 
 
 def decode(message):
@@ -121,7 +121,7 @@ def decode(message):
     try:
         bot.reply_to(message, f'{base64.b64decode(bytes(code, "utf-8")).decode()}')
     except:
-        bot.reply_to(message, "Вы ввели хуйню!")
+        bot.reply_to(message, "ERROR")
 
 
 def last_python(message):
@@ -132,7 +132,7 @@ def last_python(message):
         block3 = soup.find("div", class_="small-widget download-widget")
         bot.reply_to(message, f'{block3.find_all("p")[1].text}')
     except:
-        bot.reply_to(message, "[ОШИБКА], обратитесь к администратору - @Brainfox33421")
+        bot.reply_to(message, "ERROR")
 
 
 def ip_info(message):
@@ -148,11 +148,11 @@ def ip_info(message):
 
         bot.send_message(
             message.chat.id,
-            f"\n< Инфа о IP\nIP: {user_ip}\nГород: {user_city}\nРегион: {user_region}\nСтрана: {user_country}\nМестонахождение: {user_location}\nПровайдер: {user_org} >",
+            f"\n< Info about IP\nIP: {user_ip}\nCity: {user_city}\nRegion: {user_region}\nCountry: {user_country}\nLocation: {user_location}\nOrg: {user_org} >",
         )
     except:
         bot.send_message(
-            message.chat.id, "[ОШИБКА], обратитесь к администратору - @Brainfox33421"
+            message.chat.id, "ERROR"
         )
 
 def main(message):
@@ -169,7 +169,7 @@ def main(message):
         bot.send_photo(message.chat.id, img)
     except:
         bot.send_photo(
-            message.chat.id, "[ОШИБКА], обратитесь к администратору - @Brainfox33421"
+            message.chat.id, "ERROR"
         )
 
 bot.polling(none_stop=True)
